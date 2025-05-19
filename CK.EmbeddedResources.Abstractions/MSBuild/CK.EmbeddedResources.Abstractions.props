@@ -1,0 +1,10 @@
+<Project>
+    <!--
+    This defines the CKEmbeddedResource item group.
+    This embeds all files in "/Res" and "/Res[After]" folders as "ck@" prefixed resources with their
+    '/' separated path from the root of the project.
+    -->
+    <ItemGroup>
+        <CKEmbeddedResource Include="**/Res/**;**/Res[After]/**" Exclude="obj/**;bin/**" />
+    </ItemGroup>
+</Project>

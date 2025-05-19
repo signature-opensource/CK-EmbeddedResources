@@ -1,0 +1,71 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A87208F3-D73C-4AD4-9FF5-0314968EDD74}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E3559EF9-ED4A-4169-9287-6F94CFBD09FA}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		appveyor.yml = appveyor.yml
+		Directory.Build.props = Directory.Build.props
+		NuGet.config = NuGet.config
+		README.md = README.md
+		RepositoryInfo.xml = RepositoryInfo.xml
+		Common\SharedKey.snk = Common\SharedKey.snk
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeCakeBuilder", "CodeCakeBuilder\CodeCakeBuilder.csproj", "{C495D3DF-2E63-466B-9886-DE8A3EFBD584}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CK.EmbeddedResources.Tests", "Tests\CK.EmbeddedResources.Tests\CK.EmbeddedResources.Tests.csproj", "{C80A8F73-E21B-D4CF-7A84-8B571266FBBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CK.EmbeddedResources.Assets.Tests", "Tests\CK.EmbeddedResources.Assets.Tests\CK.EmbeddedResources.Assets.Tests.csproj", "{8F263C6E-6252-C6C1-D471-8E9D37F8980F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CK.EmbeddedResources.Abstractions", "CK.EmbeddedResources.Abstractions\CK.EmbeddedResources.Abstractions.csproj", "{93166564-AE8A-5113-5930-4918E0CCEC66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CK.EmbeddedResources", "CK.EmbeddedResources\CK.EmbeddedResources.csproj", "{B19480A1-C884-5D0C-3C1C-6B361732D064}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CK.EmbeddedResources.Assets", "CK.EmbeddedResources.Assets\CK.EmbeddedResources.Assets.csproj", "{234DD316-B080-1D00-67F7-6B3E1F089CB5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C495D3DF-2E63-466B-9886-DE8A3EFBD584}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C495D3DF-2E63-466B-9886-DE8A3EFBD584}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C495D3DF-2E63-466B-9886-DE8A3EFBD584}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C495D3DF-2E63-466B-9886-DE8A3EFBD584}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C80A8F73-E21B-D4CF-7A84-8B571266FBBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C80A8F73-E21B-D4CF-7A84-8B571266FBBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C80A8F73-E21B-D4CF-7A84-8B571266FBBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C80A8F73-E21B-D4CF-7A84-8B571266FBBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F263C6E-6252-C6C1-D471-8E9D37F8980F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F263C6E-6252-C6C1-D471-8E9D37F8980F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F263C6E-6252-C6C1-D471-8E9D37F8980F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F263C6E-6252-C6C1-D471-8E9D37F8980F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93166564-AE8A-5113-5930-4918E0CCEC66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93166564-AE8A-5113-5930-4918E0CCEC66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93166564-AE8A-5113-5930-4918E0CCEC66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93166564-AE8A-5113-5930-4918E0CCEC66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B19480A1-C884-5D0C-3C1C-6B361732D064}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B19480A1-C884-5D0C-3C1C-6B361732D064}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B19480A1-C884-5D0C-3C1C-6B361732D064}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B19480A1-C884-5D0C-3C1C-6B361732D064}.Release|Any CPU.Build.0 = Release|Any CPU
+		{234DD316-B080-1D00-67F7-6B3E1F089CB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{234DD316-B080-1D00-67F7-6B3E1F089CB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{234DD316-B080-1D00-67F7-6B3E1F089CB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{234DD316-B080-1D00-67F7-6B3E1F089CB5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C80A8F73-E21B-D4CF-7A84-8B571266FBBF} = {A87208F3-D73C-4AD4-9FF5-0314968EDD74}
+		{8F263C6E-6252-C6C1-D471-8E9D37F8980F} = {A87208F3-D73C-4AD4-9FF5-0314968EDD74}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {50141A57-D8A5-4310-B52C-9F958D15FAE7}
+	EndGlobalSection
+EndGlobal
