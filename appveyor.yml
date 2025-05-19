@@ -1,5 +1,7 @@
 version: build{build}
 image: Visual Studio 2022
+init:
+  - git config --global core.autocrlf true
 clone_folder: C:\CKli-World\CK-Core-Projects\CK-EmbeddedResources
 environment:
   CODECAKEBUILDER_SECRET_KEY:
