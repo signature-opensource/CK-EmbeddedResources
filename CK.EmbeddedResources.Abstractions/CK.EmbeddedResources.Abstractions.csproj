@@ -11,7 +11,7 @@
         </Content>
         <Content Include="MSBuild\CK.EmbeddedResources.Abstractions.targets">
             <Pack>true</Pack>
-            <PackagePath>buildTransitive\CK.EmbeddedResources.Abstractions.Abstractions.targets</PackagePath>
+            <PackagePath>buildTransitive\CK.EmbeddedResources.Abstractions.targets</PackagePath>
         </Content>
     </ItemGroup>
 
