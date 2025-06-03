@@ -71,7 +71,7 @@ public static class ResourceContainerExtensions
         }
         foreach( var c in otherContainers )
         {
-            if( container.TryGetResource( resourceName, out locator ) )
+            if( c.TryGetResource( resourceName, out locator ) )
             {
                 return true;
             }
