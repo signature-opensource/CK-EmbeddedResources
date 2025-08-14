@@ -1,22 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <!--
+  <!--
     Project references don't propagate build (transitive or not) NuGet files.
     We need to reference them explicitly.        
     -->
-    <Import Project="../../CK.EmbeddedResources.Abstractions/MSBuild/CK.EmbeddedResources.Abstractions.props" />
-    <Import Project="../../CK.EmbeddedResources.Abstractions/MSBuild/CK.EmbeddedResources.Abstractions.targets" />
-    
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <IsPackable>false</IsPackable>
-    </PropertyGroup>
-    <ItemGroup>
-        <PackageReference Include="CK.Testing.Nunit" Version="12.1.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
-        <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\..\CK.EmbeddedResources.Assets\CK.EmbeddedResources.Assets.csproj" />
-    </ItemGroup>
+  <Import Project="../../CK.EmbeddedResources.Abstractions/MSBuild/CK.EmbeddedResources.Abstractions.props" />
+  <Import Project="../../CK.EmbeddedResources.Abstractions/MSBuild/CK.EmbeddedResources.Abstractions.targets" />
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CK.Testing.Nunit" Version="13.0.1--0009-develop" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\CK.EmbeddedResources.Assets\CK.EmbeddedResources.Assets.csproj" />
+  </ItemGroup>
 </Project>
