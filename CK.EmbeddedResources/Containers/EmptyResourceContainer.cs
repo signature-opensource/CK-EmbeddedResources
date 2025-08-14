@@ -134,6 +134,9 @@ public sealed class EmptyResourceContainer : IResourceContainer, ICKVersionedBin
     public IEnumerable<ResourceFolder> GetFolders( ResourceFolder folder ) => [];
 
     /// <inheritdoc />
+    public string GetNormalizedName( ReadOnlySpan<char> resourceOrFolderName ) => Throw.InvalidOperationException<string>();
+
+    /// <inheritdoc />
     public override string ToString() => _displayName;
 
 }

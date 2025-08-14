@@ -37,8 +37,13 @@ public readonly struct ResourceFolder : IEquatable<ResourceFolder>
         _fullName = fullFolderName;
     }
 
-    ResourceFolder( string fullFolderName, IResourceContainer container )
+    internal ResourceFolder( string fullFolderName, IResourceContainer container )
     {
+        Throw.DebugAssert( container != null && fullFolderName != null );
+        Throw.DebugAssert( fullFolderName.StartsWith( container.ResourcePrefix ) );
+        Throw.DebugAssert( (fullFolderName.Length - container.ResourcePrefix.Length) <= IResourceContainer.MaxNameLength );
+        Throw.DebugAssert( "If there is a folder name, then it must end with the container's separator.",
+                           fullFolderName.Length == container.ResourcePrefix.Length || fullFolderName.EndsWith( container.DirectorySeparatorChar ) );
         _container = container;
         _fullName = fullFolderName;
     }
@@ -76,6 +81,7 @@ public readonly struct ResourceFolder : IEquatable<ResourceFolder>
 
     /// <summary>
     /// Gets the folder name without the <see cref="IResourceContainer.ResourcePrefix"/>.
+    /// This is either empty or ends with the <see cref="IResourceContainer.DirectorySeparatorChar"/>.
     /// </summary>
     public ReadOnlySpan<char> FolderName
     {
@@ -84,6 +90,17 @@ public readonly struct ResourceFolder : IEquatable<ResourceFolder>
             Throw.CheckState( IsValid );
             return _fullName.AsSpan( _container.ResourcePrefix.Length );
         }
+    }
+
+    /// <summary>
+    /// Gets the <see cref="FolderName"/> as a new string with <see cref="IResourceContainer.DirectorySeparatorChar"/>
+    /// normalized to '/'.
+    /// </summary>
+    /// <returns>The normalized folder name.</returns>
+    public string GetNormalizedFolderName()
+    {
+        Throw.CheckState( IsValid );
+        return _container.GetNormalizedName( _fullName.AsSpan( _container.ResourcePrefix.Length ) );
     }
 
     /// <summary>

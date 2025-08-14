@@ -104,6 +104,7 @@ public sealed class FileSystemResourceContainer : IResourceContainer, ICKVersion
     /// Separator is <see cref="Path.DirectorySeparatorChar"/>.
     /// </summary>
     public char DirectorySeparatorChar => Path.DirectorySeparatorChar;
+
     /// <inheritdoc />
     public IEnumerable<ResourceLocator> AllResources
     {
@@ -228,9 +229,10 @@ public sealed class FileSystemResourceContainer : IResourceContainer, ICKVersion
         var p = Path.GetFullPath( String.Concat( prefix, folderName ) );
         if( Directory.Exists( p ) )
         {
-            return new ResourceFolder( this, Path.EndsInDirectorySeparator( p )
-                                                ? p
-                                                : p + Path.DirectorySeparatorChar );
+            return new ResourceFolder( Path.EndsInDirectorySeparator( p )
+                                           ? p
+                                           : p + Path.DirectorySeparatorChar,
+                                       this );
         }
         return default;
     }
@@ -262,8 +264,26 @@ public sealed class FileSystemResourceContainer : IResourceContainer, ICKVersion
         foreach( var f in Directory.EnumerateDirectories( folder.FullFolderName ) )
         {
             Throw.DebugAssert( f[^1] != Path.DirectorySeparatorChar );
-            yield return new ResourceFolder( this, f + Path.DirectorySeparatorChar );
+            yield return new ResourceFolder( f + Path.DirectorySeparatorChar, this );
         }
+    }
+
+    /// <inheritdoc />
+    public string GetNormalizedName( ReadOnlySpan<char> resourceOrFolderName )
+    {
+        if( Path.DirectorySeparatorChar == '/'
+            || !resourceOrFolderName.Contains( Path.DirectorySeparatorChar ) )
+        {
+            return new string( resourceOrFolderName );
+        }
+        if( resourceOrFolderName.Length <= 128 )
+        {
+            Span<char> p = stackalloc char[resourceOrFolderName.Length];
+            resourceOrFolderName.CopyTo( p );
+            p.Replace( DirectorySeparatorChar, '/' );
+            return new string( p );
+        }
+        return new string( resourceOrFolderName ).Replace( Path.DirectorySeparatorChar, '/' );
     }
 
     /// <inheritdoc />

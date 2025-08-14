@@ -2,6 +2,8 @@ using Shouldly;
 using NUnit.Framework;
 using System.Linq;
 using System.Text;
+using CK.Core;
+using System;
 
 namespace CK.EmbeddedResources.Tests;
 
@@ -64,6 +66,8 @@ public class AssemblyResourcesTests
     {
         foreach( var f in d.Folders )
         {
+            Throw.DebugAssert( f.FolderName.IsEmpty || f.FolderName[^1] == '/' );
+            Throw.DebugAssert( f.GetNormalizedFolderName().Length == 0 || f.GetNormalizedFolderName()[^1] == '/' );
             b.Append( ' ', depth * 2 ).Append( f.Name ).AppendLine();
             Dump( b, f, depth + 1 );
         }

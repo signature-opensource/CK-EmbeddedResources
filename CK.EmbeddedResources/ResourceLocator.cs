@@ -81,6 +81,17 @@ public readonly struct ResourceLocator : IEquatable<ResourceLocator>
     }
 
     /// <summary>
+    /// Gets the <see cref="ResourceName"/> as a new string with <see cref="IResourceContainer.DirectorySeparatorChar"/>
+    /// normalized to '/'.
+    /// </summary>
+    /// <returns>The normalized resource name.</returns>
+    public string GetNormalizedResourceName()
+    {
+        Throw.CheckState( IsValid );
+        return _container.GetNormalizedName( _fullName.AsSpan( _container.ResourcePrefix.Length ) );
+    }
+
+    /// <summary>
     /// Gets the name of this resource without any folder related information.
     /// </summary>
     public ReadOnlySpan<char> Name => Path.GetFileName( _fullName.AsSpan() );

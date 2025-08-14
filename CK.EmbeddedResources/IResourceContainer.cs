@@ -164,6 +164,17 @@ public interface IResourceContainer
     string? GetLocalFilePath( ResourceLocator resource );
 
     /// <summary>
+    /// Creates a string where path separators are '/' whatever <see cref="DirectorySeparatorChar"/> is.
+    /// <para>
+    /// The <see cref="EmptyResourceContainer"/> throws a <see cref="InvalidOperationException"/> as it doesn't
+    /// contain any resource by design: the <paramref name="resourceOrFolderName"/> doesn't belong to it.
+    /// </para>
+    /// </summary>
+    /// <param name="resourceOrFolderName">A <see cref="ResourceLocator.ResourceName"/> or a <see cref="ResourceFolder.FolderName"/>.</param>
+    /// <returns>A normalized string.</returns>
+    string GetNormalizedName( ReadOnlySpan<char> resourceOrFolderName );
+
+    /// <summary>
     /// Returns the <see cref="DisplayName"/>.
     /// </summary>
     /// <returns>This container's DisplayName.</returns>
