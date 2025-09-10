@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CK.Core" Version="22.1.0" />
-    <PackageReference Include="NuGet.Credentials" Version="6.13.1" />
+    <PackageReference Include="NuGet.Credentials" Version="6.14.0" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="TestResult.xml" />
