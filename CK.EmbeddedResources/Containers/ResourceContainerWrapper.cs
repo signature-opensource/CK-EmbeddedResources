@@ -140,6 +140,9 @@ public sealed class ResourceContainerWrapper : IResourceContainer
         _container.WriteStream( ResourceLocator.UnsafeCreate( _container, resource.FullResourceName ), target );
     }
 
+    public string GetNormalizedName( ReadOnlySpan<char> resourceOrFolderName ) => _container.GetNormalizedName( resourceOrFolderName );
+
     /// <inheritdoc />
     public override string ToString() => _container.ToString();
+
 }

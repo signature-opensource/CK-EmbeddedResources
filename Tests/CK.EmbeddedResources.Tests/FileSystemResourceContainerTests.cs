@@ -26,8 +26,10 @@ public class FileSystemResourceContainerTests
         var theOne = content.Resources.Single();
         theOne.FullResourceName.ShouldBe( $"{c.ResourcePrefix}SomeType{Path.DirectorySeparatorChar}SomeType.cs" );
 
-        c.GetFolder( "C1/Res/" ).IsValid.ShouldBeTrue();
-        c.GetFolder( "C1\\Res" ).IsValid.ShouldBeTrue();
+        var c1Res = c.GetFolder( "C1/Res/" );
+        c1Res.IsValid.ShouldBeTrue();
+        c1Res.ShouldBe( c.GetFolder( "C1\\Res" ) );
+        c1Res.GetNormalizedFolderName().ShouldBe( "C1/Res/" );
         c.GetResource( "AssemblyResourcesTests.cs" ).IsValid.ShouldBeTrue();
 
         c.TryGetResource( "SomeType/SomeType.cs", out var locator ).ShouldBeTrue();

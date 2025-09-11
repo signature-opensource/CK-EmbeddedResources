@@ -101,6 +101,7 @@ public sealed class AssemblyResourceContainer : IResourceContainer, ICKVersioned
     /// Separator is '/'.
     /// </summary>
     public char DirectorySeparatorChar => '/';
+
     /// <inheritdoc />
     public IEnumerable<ResourceLocator> AllResources => MemoryMarshal.ToEnumerable( _names ).Select( p => new ResourceLocator( this, p ) );
 
@@ -178,6 +179,14 @@ public sealed class AssemblyResourceContainer : IResourceContainer, ICKVersioned
 
     /// <inheritdoc />
     public IEnumerable<ResourceFolder> GetFolders( ResourceFolder folder ) => CodeGenResourceContainer.DoGetFolders( folder, this, _names );
+
+    /// <summary>
+    /// Returns a new string on the <paramref name="resourceOrFolderName"/> as this <see cref="DirectorySeparatorChar"/>
+    /// is '/'.
+    /// </summary>
+    /// <param name="resourceOrFolderName">A <see cref="ResourceLocator.ResourceName"/> or a <see cref="ResourceFolder.FolderName"/>.</param>
+    /// <returns>The name as a new string.</returns>
+    public string GetNormalizedName( ReadOnlySpan<char> resourceOrFolderName ) => new string( resourceOrFolderName );
 
     /// <inheritdoc />
     public override string ToString() => _displayName;
