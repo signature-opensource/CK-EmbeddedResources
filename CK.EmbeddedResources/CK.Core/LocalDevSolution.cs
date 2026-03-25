@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace CK.Core;
@@ -11,32 +12,62 @@ namespace CK.Core;
 /// </summary>
 public static class LocalDevSolution
 {
+    static readonly HashSet<string>? _paths;
+
     /// <summary>
     /// Gets the solution root folder based on <see cref="AppContext.BaseDirectory"/>
     /// and the existence of a /.git folder.
     /// </summary>
-    public static NormalizedPath SolutionFolder;
+    public static readonly NormalizedPath SolutionFolder;
 
     /// <summary>
-    /// Gets the local ".csproj" projects folders found in the ".sln" or ".slnx"
-    /// file in the solution folder indexed by their name.
+    /// Gets whether the <see cref="SolutionFolder"/> has been found and a ".sln" or ".slnx" file that follows
+    /// the basic naming convention (it must be named with the name of the git working folder like "CK-EmbeddedResources/CK-EmbeddedResources.slnx")
+    /// exists and contains at least one C# project.
     /// <para>
-    /// given a <c>"{SolutionFolder}MyProject/MySuperProject.csproj"</c> file, the dictionary entry is
-    /// <c>"MySuperProject"</c>, <c>"{SolutionFolder}MyProject"</c>.
-    /// </para>
-    /// <para>
-    /// This is empty if <see cref="SolutionFolder"/> is <see cref="NormalizedPath.IsEmptyPath"/> (no
-    /// <c>/.git</c> folder has been found above <see cref="AppContext.BaseDirectory"/>).
+    /// When false, it is useless to call <see cref="FindLocalProjectPath(Assembly, out NormalizedPath)"/>.
     /// </para>
     /// </summary>
-    public static IReadOnlyDictionary<string,NormalizedPath> LocalProjectPaths;
+    public static bool HasLocalProjects => _paths != null;
+
+    /// <summary>
+    /// Tries to find the local full path project folder (the folder that contains the ".csproj" file
+    /// that is the source code of the <paramref name="assembly"/>).
+    /// <para>
+    /// <see cref="HasLocalProjects"/> must be true.
+    /// </para>
+    /// </summary>
+    /// <param name="assembly">The assembly that may be a locally defined one.</param>
+    /// <param name="projectPath">Contains the local project folder on success.</param>
+    /// <returns>Whether a local folder has been found for the assembly.</returns>
+    public static bool FindLocalProjectPath( Assembly assembly, out NormalizedPath projectPath )
+    {
+        projectPath = default;
+        if( _paths != null )
+        {
+            var path = (string?)assembly.CustomAttributes.FirstOrDefault( a => a.AttributeType == typeof( AssemblyMetadataAttribute )
+                                                                               && (string?)a.ConstructorArguments[0].Value == "SolutionRelativeProjectPath" )?
+                                                         .ConstructorArguments[1].Value;
+            if( path != null )
+            {
+                path = FileUtil.NormalizePathSeparator( path, ensureTrailingBackslash: false );
+                if( _paths.Contains( path ) )
+                {
+                    projectPath = SolutionFolder.Combine( Path.GetDirectoryName( path ) );
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     static LocalDevSolution()
     {
-        var p = GetSolutionFolder();
-        Dictionary<string, NormalizedPath>? projectsPath = null;
+        var p = GetSolutionDir();
+        HashSet<string>? projectsPath = null;
         if( !p.IsEmptyPath )
         {
+            SolutionFolder = p;
             var slnText = ReadSlnFile( p );
             if( slnText != null )
             {
@@ -44,20 +75,19 @@ public static class LocalDevSolution
                 var projects = Regex.Matches( slnText, @"(?<="")[^""]*\.csproj(?="")" );
                 foreach( Match project in projects )
                 {
-                    var path = p.Combine( project.Value );
-                    if( !File.Exists( path ) )
+                    var path = project.Value;
+                    var fullPath = Path.Combine( p, project.Value );
+                    if( !File.Exists( fullPath ) )
                     {
-                        ActivityMonitor.StaticLogger.Warn( $"Project file '{path}' declared in solution file not found. Ignoring project." );
+                        ActivityMonitor.StaticLogger.Warn( $"Project file '{fullPath}' declared in solution file not found. Ignoring project." );
                     }
                     else
                     {
-                        projectsPath ??= new Dictionary<string, NormalizedPath>();
-                        var name = path.LastPart;
-                        Throw.DebugAssert( name.EndsWith( ".csproj" ) && ".csproj".Length == 7 );
-                        name = name.Substring( 0, name.Length - 7 );
-                        if( !projectsPath.TryAdd( name, path.RemoveLastPart() ) )
+                        projectsPath ??= new HashSet<string>();
+                        path = FileUtil.NormalizePathSeparator( path, ensureTrailingBackslash: false );
+                        if( !projectsPath.Add( path ) )
                         {
-                            ActivityMonitor.StaticLogger.Warn( $"Found duplicate project '{name}' in solution file. Ignoring project '{path}'." );
+                            ActivityMonitor.StaticLogger.Warn( $"Found duplicate project '{path}' in solution file. Ignoring project '{fullPath}'." );
                         }
                     }
                 }
@@ -65,13 +95,14 @@ public static class LocalDevSolution
                 {
                     ActivityMonitor.StaticLogger.Warn( $"No project found in solution file:{Environment.NewLine}{slnText}." );
                 }
+                else
+                {
+                    _paths = projectsPath;
+                }
             }
         }
-        SolutionFolder = p;
-        LocalProjectPaths = (IReadOnlyDictionary<string, NormalizedPath>?)projectsPath
-                            ?? ImmutableDictionary<string, NormalizedPath>.Empty;
 
-        static NormalizedPath GetSolutionFolder()
+        static NormalizedPath GetSolutionDir()
         {
             var p = AppContext.BaseDirectory;
             while( !string.IsNullOrEmpty( p ) )

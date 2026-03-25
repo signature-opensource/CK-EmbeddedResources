@@ -14,6 +14,7 @@ public class BasicTests
     public void TargetPath_can_be_empty()
     {
         Type type = typeof( T1.Package );
+
         // This is a Local project: we obtain a FileSystemResourceContainer.
         string localFavIconPath;
         {

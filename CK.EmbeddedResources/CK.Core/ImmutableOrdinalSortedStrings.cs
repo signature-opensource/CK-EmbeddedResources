@@ -38,7 +38,7 @@ public readonly struct ImmutableOrdinalSortedStrings
 
     /// <summary>
     /// Creates a <see cref="ImmutableOrdinalSortedStrings"/> on an existing array whose ownership
-    /// is transfered to the result: the array must not be altered in any way.
+    /// is transferred to the result: the array must not be altered in any way.
     /// </summary>
     /// <param name="transferOwnership">Array to transfer.</param>
     /// <param name="mustSort">True to sort the array, false if the array is already sorted.</param>

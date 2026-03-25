@@ -58,7 +58,7 @@ public static class TypeExtensions
     /// is a local one for based on a CallerFilePath (<see cref="CallerFilePathAttribute"/>)
     /// captured by an attribute on this type (typically a <see cref="IEmbeddedResourceTypeAttribute"/>).
     /// <para>
-    /// On success, the container is bound to the corresponding embedded ressources "Res/" folder or to the file system
+    /// On success, the container is bound to the corresponding embedded resources "Res/" folder or to the file system
     /// "Res\" folder.
     /// </para>
     /// <para>
@@ -90,7 +90,7 @@ public static class TypeExtensions
         var assembly = type.Assembly;
         var assemblyName = assembly.GetName().Name;
         Throw.CheckArgument( "Cannot handle dynamic assembly.", assemblyName != null );
-        if( !ignoreLocal && LocalDevSolution.LocalProjectPaths.TryGetValue( assemblyName, out var projectPath ) )
+        if( !ignoreLocal && LocalDevSolution.FindLocalProjectPath( assembly, out var projectPath ) )
         {
             containerDisplayName = AssemblyResourceContainer.MakeDisplayName( containerDisplayName, type, resAfter );
             if( AssemblyResources.ValidateContainerForType( monitor,

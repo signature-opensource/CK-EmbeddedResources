@@ -1,14 +1,26 @@
 <Project>
 
-    <!--
-    Simply adds the set of CKEmbeddedResource into the MSBuild EmbeddedResource one, mapping
-    their logical name to their original path in the project prefixed by "ck@".
-    -->
     <Target Name="HandleCKEmbeddedResource" BeforeTargets="BeforeResGen" Condition=" '$(EnableCKEmbeddedResource)' != 'false' ">
+        <!--
+        Simply adds the set of CKEmbeddedResource into the MSBuild EmbeddedResource one, mapping
+        their logical name to their original path in the project prefixed by "ck@".
+        -->
         <ItemGroup>
             <EmbeddedResource Include="@(CKEmbeddedResource)" Type="Non-Resx" WithCulture="false">
                 <LogicalName>ck@$([System.String]::new('%(RelativeDir)').Replace('\','/'))%(FileName)%(Extension)</LogicalName>
             </EmbeddedResource>
+
+        </ItemGroup>
+
+        <!--
+        Keeps the Solution relative folder path as a metadata attribute.
+        Used to consider the local files instead of the embedded resources.
+        -->
+        <PropertyGroup>
+            <_SolutionRelativeProjectPath>$(MSBuildProjectFullPath.Substring($(SolutionDir.Length)))</_SolutionRelativeProjectPath>
+        </PropertyGroup>
+        <ItemGroup>
+            <AssemblyMetadata Include="SolutionRelativeProjectPath" Value="$(_SolutionRelativeProjectPath)" />
         </ItemGroup>
     </Target>
 

@@ -32,10 +32,9 @@ public sealed partial class AssemblyResources
         _assembly = a;
         _allResourceNames = ImmutableOrdinalSortedStrings.UnsafeCreate( a.GetManifestResourceNames(), mustSort: true );
         _ckResourceNames = _allResourceNames.GetPrefixedStrings( "ck@" );
-        var localProjects = LocalDevSolution.LocalProjectPaths;
-        if( localProjects.Count > 0 )
+        if( LocalDevSolution.HasLocalProjects )
         {
-            localProjects.TryGetValue( assemblyName, out _localPath );
+            LocalDevSolution.FindLocalProjectPath( a, out _localPath );
         }
     }
 
@@ -53,7 +52,7 @@ public sealed partial class AssemblyResources
     /// <summary>
     /// Gets the local development folder for this assembly.
     /// To not be the <see cref="NormalizedPath.IsEmptyPath"/>, the running code must be in
-    /// a git working folder, a ".sln" or ".slx" file conventionnaly named with the solution
+    /// a git working folder, a ".sln" or ".slx" file conventionnally named with the solution
     /// directory name must exist and contain a .csproj reference that matches the name of
     /// this assembly.
     /// </summary>
