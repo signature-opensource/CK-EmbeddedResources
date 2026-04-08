@@ -1,0 +1,16 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="appveyor.yml" />
+    <File Path="Directory.Build.props" />
+    <File Path="NuGet.config" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="Tests/CK.EmbeddedResources.Assets.Tests/CK.EmbeddedResources.Assets.Tests.csproj" />
+    <Project Path="Tests/CK.EmbeddedResources.Tests/CK.EmbeddedResources.Tests.csproj" />
+  </Folder>
+  <Project Path="CK.EmbeddedResources.Abstractions/CK.EmbeddedResources.Abstractions.csproj" />
+  <Project Path="CK.EmbeddedResources.Assets/CK.EmbeddedResources.Assets.csproj" />
+  <Project Path="CK.EmbeddedResources/CK.EmbeddedResources.csproj" />
+</Solution>
