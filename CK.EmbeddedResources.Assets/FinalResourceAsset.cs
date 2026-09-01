@@ -30,6 +30,22 @@ public readonly record struct FinalResourceAsset( ResourceLocator Origin, IEnume
     }
 
     /// <summary>
+    /// Returns a resource asset that combines this one with <paramref name="other"/> that targets the same
+    /// path: the other's <see cref="Origin"/> and its own <see cref="Ambiguities"/> become ambiguities of
+    /// this one.
+    /// <para>
+    /// When both share the same <see cref="Origin"/> (the same resource reached through two routes), this
+    /// is returned unchanged: this is not an ambiguity.
+    /// </para>
+    /// </summary>
+    /// <param name="other">The other asset for the same target path.</param>
+    /// <returns>A new resource asset or this one if nothing new is known.</returns>
+    public FinalResourceAsset AddAmbiguity( FinalResourceAsset other )
+    {
+        return AddAmbiguity( other.Origin ).AddAmbiguities( other.Ambiguities );
+    }
+
+    /// <summary>
     /// Adds multiple ambiguities at once.
     /// </summary>
     /// <param name="ambiguities">The ambiguities to add.</param>

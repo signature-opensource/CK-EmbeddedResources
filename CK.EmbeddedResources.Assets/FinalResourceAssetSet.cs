@@ -80,7 +80,7 @@ public sealed class FinalResourceAssetSet
         {
             if( result.TryGetValue( path, out var f2 ) )
             {
-                var f = f1.AddAmbiguities( f2.Ambiguities );
+                var f = f1.AddAmbiguity( f2 );
                 isAmbiguous |= f.Ambiguities != null;
                 result[path] = f;
             }
