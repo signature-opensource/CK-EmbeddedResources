@@ -38,6 +38,49 @@ back to the `Res/` folder that sits next to its source file - a link that nothin
 An attribute that carries this interface is therefore doing double duty: whatever else it means, it also
 declares "this type owns the resources beside it".
 
+In practice a decorated type is the whole declaration:
+
+```csharp
+using CK.Core;
+
+namespace Namespace.Does.Not.Matter;
+
+[EmbeddedResourceType]
+public class SomeType
+{
+}
+```
+
+with the resources beside it, and the logical names the build gives them:
+
+```
+SomeType/SomeType.cs
+SomeType/Res/data.json        ->  ck@SomeType/Res/data.json
+```
+
+The namespace in that fixture is called `Namespace.Does.Not.Matter` on purpose, and it is the clearest
+statement of what this package does. Classic .NET embedded-resource names are built from the namespace;
+these are built from the **project-relative source path**. Move the file and the resource name follows
+it; rename the namespace and nothing changes.
+
+Two mechanisms meet on that path, and they are worth keeping apart:
+
+- **At build time**, the `.targets` file names the resource from the item's own location -
+  `ck@$([System.String]::new('%(RelativeDir)').Replace('\','/'))%(FileName)%(Extension)`. No attribute
+  is involved; a `Res/` file is embedded under its project-relative path whether or not any type
+  is decorated.
+- **At run time**, `[CallerFilePath]` gives the *absolute* path of the decoration site. That is more
+  than is wanted, so the consumer walks it back to the folder named after the assembly and keeps the
+  remainder - recovering the same project-relative sub-path the build used, and with it the type's own
+  resource prefix.
+
+So the attribute does not produce the name; it lets a type compute the name the build already chose.
+The consequence is worth stating plainly: the folder layout is the API. A `Res/` folder is bound to the
+type whose source file sits next to it, so moving a `.cs` file without its `Res/` folder silently
+detaches its resources.
+
+From [`SomeType`](../Tests/CK.EmbeddedResources.Tests/SomeType/SomeType.cs).
+
 ### Overriding across packages
 
 Resources coming from different packages land on the same target paths, so a definition has to say what

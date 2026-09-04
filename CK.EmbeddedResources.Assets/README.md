@@ -16,7 +16,7 @@ A **definition** is what one package says. A
 by their **target** path - where the resource wants to land, which is not where it lives.
 
 A **final** is what the whole graph agreed on. A [`FinalResourceAsset`](FinalResourceAsset.cs) is *"a
-resource and a potential set of ambiguities"*: an `Origin`, plus the other locators that claimed the
+resource and a potential set of ambiguites"* (sic): an `Origin`, plus the other locators that claimed the
 same target path. A [`FinalResourceAssetSet`](FinalResourceAssetSet.cs) is `IsAmbiguous` when any of its
 assets carries such a list.
 
@@ -137,6 +137,92 @@ Two rules keep the manifest unambiguous:
   explicitly or through a folder - is an error**.
 - Overrides are processed **after** the mappings, so their paths are target paths, and a resource may
   appear in at most one of the three override sections.
+
+### The override rule, worked through
+
+Three fixture packages, each a `[EmbeddedResourceType] class Package {}` with one `favicon.ico` and one
+manifest. What differs is only the manifest.
+
+`T1/Res/assets/assets.jsonc` - ships the file at the root:
+
+```jsonc
+{
+    "targetPath":  ""
+}
+```
+
+`T2/Res/assets/assets.jsonc` - same target path, and says nothing about overriding:
+
+```jsonc
+{
+    "mappings": {
+        "favicon.ico" :  ""
+    }
+}
+```
+
+`T3/Res/assets/assets.jsonc` - same, plus the declaration:
+
+```jsonc
+{
+    "mappings": {
+        "favicon.ico": ""
+    },
+    "O": [ "favicon.ico" ]
+}
+```
+
+Combining T1 then T2 does not fail - it *warns*, and carries the collision forward as an ambiguity.
+The message names both sides and the fix:
+
+```
+Asset 'favicon.ico' in resources of 'CK.EmbeddedResources.Assets.Tests.T2.Package' type overides the existing asset from resources of 'CK.EmbeddedResources.Assets.Tests.T1.Package' type.
+An explicit override declaration "O": [..., "favicon.ico", ...] is required.
+```
+
+The set that comes back is not null. `T2`'s asset is folded into `T1`'s as an ambiguity and
+`IsAmbiguous` is set - so the collision is not resolved here, it is *reported and deferred*. What makes
+it fatal is the rule stated earlier: the ultimate final set must not be ambiguous.
+
+Combining T1 then T3 is the clean case, and T3 is the winner:
+
+```csharp
+// TryLoadCombine is the fixture's own helper: it loads the head's definitions, calls
+// ToInitialFinalSet, then Combines each remainder into the result.
+var f = TryLoadCombine( TestHelper.Monitor, typeof( T1.Package ), typeof( T3.Package ) );
+Throw.Assert( f != null );   // TryLoadCombine returns a nullable set
+f.IsAmbiguous.ShouldBeFalse();
+f.Assets["favicon.ico"].Origin.Container.DisplayName
+    .ShouldBe( "resources of 'CK.EmbeddedResources.Assets.Tests.T3.Package' type" );
+```
+
+Note what the winner is: the package that *declared* `"O"`, not the first or the last loaded. An
+override is a claim a package makes about itself. Declared, the definition simply replaces what was
+there and no ambiguity is recorded; undeclared, both origins are kept and the set is marked - which is
+the difference between an override and a collision.
+
+**And this is the real contrast with `Aggregate`,** which is narrower than it first looks. The
+undeclared-collision branch of `Combine` calls `exists.AddAmbiguity( def.Origin )` - the very same
+accumulation `Aggregate` performs. The difference is not the outcome, it is the *channel*:
+`Combine( IActivityMonitor monitor, FinalResourceAssetSet baseSet )` has a monitor and warns on its way
+through, while `Aggregate` has none in either overload, so an ambiguity there surfaces only through
+`IsAmbiguous`. That is why the gap described above matters: it is the one case where the silent channel
+is also the wrong one.
+
+`Combine` does return null, but for a different reason entirely - a `Regular` (`"O"`) override whose
+target path does **not** already exist. That is an `Error`, not a warning: declaring an override for
+something nothing provides is a bug in the declaring package, and the whole combine gives up. An
+`Optional` (`"?O"`) override in the same position is skipped at `Debug` level instead.
+
+`T1/Res/` also shows the target-path precedence: `LoadAssets( monitor, "some/path", out var assets, "assets" )`
+is called with a default target path of `"some/path"`, and T1's explicit `"targetPath": ""` wins over it.
+Its resource prefix is `ck@T1/Res/`, and the asset's full resource name
+`ck@T1/Res/assets/favicon.ico` - the source path, as the abstractions package describes.
+
+From [`BasicTests`](../Tests/CK.EmbeddedResources.Assets.Tests/BasicTests.cs) and the
+[`T1`](../Tests/CK.EmbeddedResources.Assets.Tests/T1),
+[`T2`](../Tests/CK.EmbeddedResources.Assets.Tests/T2),
+[`T3`](../Tests/CK.EmbeddedResources.Assets.Tests/T3) fixtures.
 
 ## Requires.
 
