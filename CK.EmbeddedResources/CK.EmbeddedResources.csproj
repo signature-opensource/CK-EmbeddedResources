@@ -4,7 +4,7 @@
     <LangVersion>13</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CK.ActivityMonitor.SimpleSender" Version="27.0.1-mike.0.ci.3" />
+    <PackageReference Include="CK.ActivityMonitor.SimpleSender" Version="27.1.0-mike.0.ci.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CK.EmbeddedResources.Abstractions\CK.EmbeddedResources.Abstractions.csproj" />
