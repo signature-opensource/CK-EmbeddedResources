@@ -94,11 +94,13 @@ recognized as locally built - a `FileSystemResourceContainer` on the real source
 When the type carries no such attribute the call still returns a container: an `EmptyResourceContainer`
 with `IsValid` false, after logging the error. Check `IsValid` on what comes back.
 
-That local-source detection is [`LocalDevSolution`](CK.Core/LocalDevSolution.cs), and it happens in two
+That local-source detection is `LocalDevSolution` (in the CK.ActivityMonitor package, namespace `CK.Core`), and it happens in two
 stages. `HasLocalProjects` is decided once, in a static constructor, and needs three things:
 
-1. a `/.git` folder found by walking up from `AppContext.BaseDirectory`;
-2. next to it, a `.sln` or `.slnx` named after that folder;
+1. a git working folder found by walking up from `AppContext.BaseDirectory` (a `.git` folder, or a `.git`
+   file in a linked worktree);
+2. in it, a `.sln` or `.slnx` named after the solution (`LocalDevSolution.SolutionName`: the folder name,
+   or the name of the main repository in a linked worktree);
 3. **at least one `.csproj` listed in that solution file that actually exists on disk** - the ones that
    do not are individually warned about and skipped.
 
