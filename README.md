@@ -2,8 +2,8 @@
 
 [![Licence](https://img.shields.io/github/license/signature-opensource/CK-EmbeddedResources.svg)](LICENSE)
 
-Provides an abstraction for "resources" identified by a string that can exist as embedded resources in
-assembly, be files on the local file system or dynamically created by code.
+Embedded resources for the CK stack: automatic `Res/` folder embedding, resource containers over
+assemblies, file system and generated content, and asset composition across packages.
 
 | Package | Description | Latest stable |
 |---------|-------------|---------------|

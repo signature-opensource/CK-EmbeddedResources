@@ -28,7 +28,7 @@ Resources are identified by [`ResourceLocator`](ResourceLocator.cs) and
 [`ResourceFolder`](ResourceFolder.cs) that are 2 small structs managed by their owning container.
 
 _Note:_ This abstraction is not perfect. The "folder separator" should be abstracted more than it
-currenly is: today, only '/' or '\' is really supported, but this is enough for our needs.
+currently is: today, only '/' or '\' is really supported, but this is enough for our needs.
 
 ### Invalid instead of null
 

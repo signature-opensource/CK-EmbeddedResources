@@ -1,7 +1,7 @@
 # CK.EmbeddedResources.Abstractions
 
 Provides automatic embedded resources support for `Res/` and `Res[After]/` folders thanks to the
-[MSBuild](MSBuild/) props and targets files that transitively flow accross dependencies.
+[MSBuild](MSBuild/) props and targets files that transitively flow across dependencies.
 
 It is a micro-package that only defines 3 types - and the build logic is arguably the larger half of it.
 
@@ -12,7 +12,7 @@ It is a micro-package that only defines 3 types - and the build logic is arguabl
 - [`EmbeddedResourceTypeAttribute`](EmbeddedResourceTypeAttribute.cs) is the default implementation of
   this interface.
 - [`ResourceOverrideKind`](ResourceOverrideKind.cs) is an enum that models all possible behaviors when
-  dealing with overrides of a resource accross packages.
+  dealing with overrides of a resource across packages.
 
 ### Locating a type's resources
 

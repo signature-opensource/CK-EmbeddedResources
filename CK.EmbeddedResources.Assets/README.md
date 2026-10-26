@@ -1,6 +1,6 @@
 # CK.EmbeddedResources.Assets
 
-Implements _assets resources_: their definition and their composition accross multiple sources in a
+Implements _assets resources_: their definition and their composition across multiple sources in a
 Direct Acyclic Graph structure.
 
 > ℹ️ Read [CK.EmbeddedResources](../CK.EmbeddedResources/README.md) first: assets are loaded from an
@@ -15,8 +15,8 @@ A **definition** is what one package says. A
 `ResourceOverrideKind`, and a [`ResourceAssetDefinitionSet`](ResourceAssetDefinitionSet.cs) indexes them
 by their **target** path - where the resource wants to land, which is not where it lives.
 
-A **final** is what the whole graph agreed on. A [`FinalResourceAsset`](FinalResourceAsset.cs) is *"a
-resource and a potential set of ambiguites"* (sic): an `Origin`, plus the other locators that claimed the
+A **final** is what the whole graph agreed on. A [`FinalResourceAsset`](FinalResourceAsset.cs) is a
+resource and a potential set of ambiguities: an `Origin`, plus the other locators that claimed the
 same target path. A [`FinalResourceAssetSet`](FinalResourceAssetSet.cs) is `IsAmbiguous` when any of its
 assets carries such a list.
 
@@ -35,8 +35,7 @@ Graph must not be ambiguous.**
    only `None` and `Always` survive. By construction, no ambiguity.
 2. **By aggregating two final sets.** `Aggregate` merges them, and a target path mapped to different
    resources on each side becomes an ambiguity even though neither input was ambiguous. This is the
-   operation that walks up the graph, and the class summary describes it as *"commutative, associative
-   and idempotent"* - with one nuance worth knowing, below.
+   operation that walks up the graph; what it guarantees is detailed below.
 3. **By combining a definition set into a final set.** `ResourceAssetDefinitionSet.Combine` is where
    overrides do their work: *"the override definitions can resolve ambiguities from the final set."*
 
@@ -66,17 +65,6 @@ paths and knows about the same resources for each, because `AddAmbiguity` accumu
 
 The same resource reached through two routes is not a conflict: `AddAmbiguity` returns the asset
 unchanged when the locator already equals its `Origin`.
-
-One known gap remains, and it is shared with the Globalization sibling rather than specific to this
-package: `isAmbiguous` is seeded from the larger set only and is never updated in the branch that adds
-an asset present in the smaller set alone. An ambiguity carried by such an asset reaches the result while
-the flag stays false, contradicting `IsAmbiguous`'s own definition. Aggregating an already-ambiguous
-smaller set into a larger clean one is the case to watch.
-
-That gap is also the one thing that can make `IsAmbiguous` depend on the direction of the call: with two
-sets of equal count there is no smaller/larger swap, so the flag is seeded from whichever set was passed
-as the argument. Until the gap is closed, treat `IsAmbiguous` as reliable only when at least one asset
-collided.
 
 `FinalResourceAssetSet.Empty` is the singleton to start from.
 
@@ -206,8 +194,7 @@ undeclared-collision branch of `Combine` calls `exists.AddAmbiguity( def.Origin 
 accumulation `Aggregate` performs. The difference is not the outcome, it is the *channel*:
 `Combine( IActivityMonitor monitor, FinalResourceAssetSet baseSet )` has a monitor and warns on its way
 through, while `Aggregate` has none in either overload, so an ambiguity there surfaces only through
-`IsAmbiguous`. That is why the gap described above matters: it is the one case where the silent channel
-is also the wrong one.
+`IsAmbiguous`.
 
 `Combine` does return null, but for a different reason entirely - a `Regular` (`"O"`) override whose
 target path does **not** already exist. That is an `Error`, not a warning: declaring an override for
