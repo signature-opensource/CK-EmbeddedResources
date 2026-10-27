@@ -59,7 +59,7 @@ public class BasicTests
         {
             var f = TryLoadCombine( TestHelper.Monitor, typeof( T1.Package ), typeof( T2.Package ) );
             logs.ShouldContain( """
-                    Asset 'favicon.ico' in resources of 'CK.EmbeddedResources.Assets.Tests.T2.Package' type overides the existing asset from resources of 'CK.EmbeddedResources.Assets.Tests.T1.Package' type.
+                    Asset 'favicon.ico' in resources of 'CK.EmbeddedResources.Assets.Tests.T2.Package' type overrides the existing asset from resources of 'CK.EmbeddedResources.Assets.Tests.T1.Package' type.
                     An explicit override declaration "O": [..., "favicon.ico", ...] is required.
                     """ );
         }

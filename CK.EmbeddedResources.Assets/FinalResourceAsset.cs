@@ -6,7 +6,7 @@ using System.Linq;
 namespace CK.EmbeddedResources;
 
 /// <summary>
-/// A final resource asset is a resource and a potential set of ambiguites.
+/// A final resource asset is a resource and a potential set of ambiguities.
 /// </summary>
 /// <param name="Origin">The first resource for the target path.</param>
 /// <param name="Ambiguities">The resources that share the same target path if any.</param>

@@ -164,7 +164,7 @@ Combining T1 then T2 does not fail - it *warns*, and carries the collision forwa
 The message names both sides and the fix:
 
 ```
-Asset 'favicon.ico' in resources of 'CK.EmbeddedResources.Assets.Tests.T2.Package' type overides the existing asset from resources of 'CK.EmbeddedResources.Assets.Tests.T1.Package' type.
+Asset 'favicon.ico' in resources of 'CK.EmbeddedResources.Assets.Tests.T2.Package' type overrides the existing asset from resources of 'CK.EmbeddedResources.Assets.Tests.T1.Package' type.
 An explicit override declaration "O": [..., "favicon.ico", ...] is required.
 ```
 

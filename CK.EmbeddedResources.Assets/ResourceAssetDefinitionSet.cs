@@ -90,7 +90,7 @@ public sealed class ResourceAssetDefinitionSet
                 if( def.Override == ResourceOverrideKind.None )
                 {
                     monitor.Warn( $"""
-                        Asset '{path}' in {def.Origin.Container} overides the existing asset from {exists.Origin.Container}.
+                        Asset '{path}' in {def.Origin.Container} overrides the existing asset from {exists.Origin.Container}.
                         An explicit override declaration "O": [..., "{path}", ...] is required.
                         """ );
                         
@@ -159,7 +159,7 @@ public sealed class ResourceAssetDefinitionSet
                 if( asset.Override is ResourceOverrideKind.None )
                 {
                     monitor.Error( $"""
-                                    Asset '{path}' in {asset.Origin.Container} overides the existing asset from {ourAsset.Origin.Container}.
+                                    Asset '{path}' in {asset.Origin.Container} overrides the existing asset from {ourAsset.Origin.Container}.
                                     An explicit override declaration "O": [... "{path}" ...] is required.
                                     """ );
                     success = false;
