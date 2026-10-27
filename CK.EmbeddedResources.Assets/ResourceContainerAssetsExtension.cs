@@ -276,7 +276,7 @@ public static class ResourceContainerAssetsExtension
         {
             var subPath = res.FullResourceName.Substring( resFolder.FullFolderName.Length );
             var t = target.Combine( subPath );
-            if( final.TryGetValue( target, out var already ) )
+            if( final.TryGetValue( t, out var already ) )
             {
                 if( mappingKey != null )
                 {
