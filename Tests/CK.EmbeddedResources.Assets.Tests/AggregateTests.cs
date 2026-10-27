@@ -90,18 +90,11 @@ public class AggregateTests
     }
 
     /// <summary>
-    /// Characterization test: this passes, and what it asserts is a remaining defect - deliberately left
-    /// alone, because the sibling <c>FinalTranslationSet.AggregateTranslations</c> has the same one and
-    /// fixing only this side would make the two diverge.
-    /// <para>
-    /// In <c>Aggregate</c>, <c>isAmbiguous</c> is seeded from the larger set only and is never OR-ed in the
-    /// branch that adds an asset present in the smaller set alone. An ambiguity carried by such an asset
-    /// therefore reaches the result while <see cref="FinalResourceAssetSet.IsAmbiguous"/> stays false,
-    /// contradicting its own definition ("at least one of the Assets has a non null Ambiguities").
-    /// </para>
+    /// An ambiguity carried by an asset that only the smaller set has must be reported by
+    /// <see cref="FinalResourceAssetSet.IsAmbiguous"/>, whatever the aggregation order.
     /// </summary>
     [Test]
-    public void Aggregate_flag_ignores_an_ambiguity_carried_by_the_smaller_set()
+    public void Aggregate_reports_an_ambiguity_carried_by_the_smaller_set()
     {
         // A one-asset set that is already ambiguous on 'logo.png'.
         var ambiguous = OneAsset( "P1", "P1-content" ).Aggregate( OneAsset( "P2", "P2-content" ) );
@@ -116,13 +109,11 @@ public class AggregateTests
         var bigger = def3.ShouldNotBeNull().ToInitialFinalSet( TestHelper.Monitor ).ShouldNotBeNull();
         bigger.Assets.Count.ShouldBe( 2 );
 
-        var agg = ambiguous.Aggregate( bigger );
-
-        agg.Assets.Count.ShouldBe( 3 );
-        agg.Assets["logo.png"].Ambiguities.ShouldNotBeNull( "The ambiguity did reach the result..." );
-        agg.IsAmbiguous.ShouldBeFalse( "...but the flag does not report it." );
-
-        // The invariant IsAmbiguous claims to hold, stated explicitly:
-        agg.IsAmbiguous.ShouldNotBe( agg.Assets.Values.Any( a => a.Ambiguities != null ) );
+        foreach( var agg in new[] { ambiguous.Aggregate( bigger ), bigger.Aggregate( ambiguous ) } )
+        {
+            agg.Assets.Count.ShouldBe( 3 );
+            agg.Assets["logo.png"].Ambiguities.ShouldNotBeNull();
+            agg.IsAmbiguous.ShouldBeTrue();
+        }
     }
 }

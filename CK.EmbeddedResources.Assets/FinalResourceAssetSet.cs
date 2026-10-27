@@ -32,20 +32,25 @@ namespace CK.EmbeddedResources;
 /// </list>
 /// The ultimate final set of a Direct Acyclic Graph must not be ambiguous.
 /// <para>
-/// This operation is commutative, associative and idempotent.
+/// Aggregation is commutative, associative and idempotent regarding the target paths and their ambiguity
+/// (the <see cref="FinalResourceAsset.Origin"/> kept for a conflicting target path depends on the order).
 /// </para>
 /// </summary>
 public sealed class FinalResourceAssetSet
 {
     readonly IReadOnlyDictionary<NormalizedPath, FinalResourceAsset> _assets;
-    readonly bool _isAmbiguous;
+    // Computed when needed: maintaining it across Aggregate and Combine is useless (it is
+    // read only on the final set) and error prone.
+    bool? _isAmbiguous;
 
     /// <summary>
     /// Empty set singleton.
     /// </summary>
     public static readonly FinalResourceAssetSet Empty = new FinalResourceAssetSet( ImmutableDictionary<NormalizedPath, FinalResourceAsset>.Empty, false );
 
-    internal FinalResourceAssetSet( IReadOnlyDictionary<NormalizedPath, FinalResourceAsset> assets, bool isAmbiguous )
+    /// <param name="assets">The final assets.</param>
+    /// <param name="isAmbiguous">The known ambiguity (null to compute it when needed).</param>
+    internal FinalResourceAssetSet( IReadOnlyDictionary<NormalizedPath, FinalResourceAsset> assets, bool? isAmbiguous = null )
     {
         _assets = assets;
         _isAmbiguous = isAmbiguous;
@@ -59,7 +64,16 @@ public sealed class FinalResourceAssetSet
     /// <summary>
     /// Gets whether at least one of the <see cref="Assets"/> has a non null <see cref="FinalResourceAsset.Ambiguities"/>.
     /// </summary>
-    public bool IsAmbiguous => _isAmbiguous;
+    public bool IsAmbiguous => _isAmbiguous ??= HasAmbiguity( _assets );
+
+    static bool HasAmbiguity( IReadOnlyDictionary<NormalizedPath, FinalResourceAsset> assets )
+    {
+        foreach( var a in assets.Values )
+        {
+            if( a.Ambiguities != null ) return true;
+        }
+        return false;
+    }
 
     /// <summary>
     /// Aggregate this set with an other one. Even if both sets are not <see cref="IsAmbiguous"/>,
@@ -75,21 +89,18 @@ public sealed class FinalResourceAssetSet
         var (s1, s2) = (this, other);
         if( _assets.Count > other._assets.Count ) (s1, s2) = (s2, s1);
         var result = new Dictionary<NormalizedPath, FinalResourceAsset>( s2._assets );
-        bool isAmbiguous = s2._isAmbiguous;
         foreach( var (path,f1) in s1._assets )
         {
             if( result.TryGetValue( path, out var f2 ) )
             {
-                var f = f1.AddAmbiguity( f2 );
-                isAmbiguous |= f.Ambiguities != null;
-                result[path] = f;
+                result[path] = f1.AddAmbiguity( f2 );
             }
             else
             {
                 result.Add( path, f1 );
             }
         }
-        return new FinalResourceAssetSet( result, isAmbiguous );
+        return new FinalResourceAssetSet( result );
     }
 
     /// <summary>

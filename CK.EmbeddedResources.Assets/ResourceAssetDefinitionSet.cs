@@ -83,9 +83,6 @@ public sealed class ResourceAssetDefinitionSet
         // Avoids reallocation/doubling the size.
         var result = new Dictionary<NormalizedPath, FinalResourceAsset>( baseSet.Assets.Count + _assets.Count );
         bool success = true;
-        bool isAmbiguous = false;
-        // To be able to compute the IsAmbiguous, we should iterate on the baseSet
-        // but we must also detect buggy overrides, so we iterate on the definitions.
         foreach( var (path,def) in _assets )
         {
             if( baseSet.Assets.TryGetValue( path, out var exists ) )
@@ -97,9 +94,7 @@ public sealed class ResourceAssetDefinitionSet
                         An explicit override declaration "O": [..., "{path}", ...] is required.
                         """ );
                         
-                    var a = exists.AddAmbiguity( def.Origin );
-                    result.Add( path, a );
-                    isAmbiguous = true;
+                    result.Add( path, exists.AddAmbiguity( def.Origin ) );
                 }
                 else
                 {
@@ -132,15 +127,14 @@ public sealed class ResourceAssetDefinitionSet
         {
             return null;
         }
-        // Fill with the base set and compute the isAmbiguous.
+        // Fill with the base set.
         foreach( var (path,res) in baseSet.Assets )
         {
             // Skips already handled paths.
             if( _assets.ContainsKey( path ) ) continue;
             result.Add( path, res );
-            isAmbiguous |= res.Ambiguities != null;
         }
-        return new FinalResourceAssetSet( result, isAmbiguous );
+        return new FinalResourceAssetSet( result );
     }
 
     /// <summary>
