@@ -28,7 +28,8 @@ public class FileSystemResourceContainerTests
 
         var c1Res = c.GetFolder( "C1/Res/" );
         c1Res.IsValid.ShouldBeTrue();
-        c1Res.ShouldBe( c.GetFolder( "C1\\Res" ) );
+        // With the platform separator and without the trailing one (outside Windows, a backslash is a character of a name).
+        c1Res.ShouldBe( c.GetFolder( $"C1{Path.DirectorySeparatorChar}Res" ) );
         c1Res.GetNormalizedFolderName().ShouldBe( "C1/Res/" );
         c.GetResource( "AssemblyResourcesTests.cs" ).IsValid.ShouldBeTrue();
 
